@@ -1,0 +1,60 @@
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">Formulaire</h1>
+  <form action="/submit" method="post" enctype="multipart/form-data" id="myForm" class=" max-w-md mx-auto">
+    <div class="mb-4">
+      <label for="nom" class="block text-sm font-medium text-gray-600">Nom:</label>
+      <input type="text" name="nom" required
+             class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+
+    <div class="mb-4">
+      <label for="prenom" class="block text-sm font-medium text-gray-600">Prénom:</label>
+      <input type="text" name="prenom" required
+             class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-600">Genre:</label>
+      <div class="flex items-center space-x-4">
+        <input type="radio" name="genre" value="Homme" checked class="text-blue-500">
+        <span class="text-gray-700">Homme</span>
+        <input type="radio" name="genre" value="Femme" class="text-pink-500">
+        <span class="text-gray-700">Femme</span>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label for="pays" class="block text-sm font-medium text-gray-600">Pays:</label>
+      <select name="pays" required
+              class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+        {{#each countries}}
+        <option value="{{this.name}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label for="auteur" class="block text-sm font-medium text-gray-600">Auteur:</label>
+      <select name="auteur" required
+              class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+        <option value="{{author}}">{{author}}</option>
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label for="cv" class="block text-sm font-medium text-gray-600">CV (PDF):</label>
+      <input type="file" name="cv"  accept=".pdf" required
+             class=" mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+ 
+    <div class="mb-4">
+      <label for="images" class="block text-sm font-medium text-gray-600">Images (JPG, PNG):</label>
+      <input type="file" name="images" accept=".jpg, .png" multiple   class="filepondImage" required>
+       <input type="hidden" name="allImages" id="allImages" value="">
+    </div>
+   
+ 
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Envoyer</button>
+  </form>
+ 
+</div>
