@@ -50,10 +50,8 @@ app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images'
   // Récupération des données du formulaire
   const { nom, prenom, genre, pays, auteur } = req.body;
   const cv = req.files['cv']; // Utilisez 'cv' au lieu de 'file' pour récupérer les fichiers du champ 'cv'
-  const images = JSON.stringify(req.body.allImages).split(',')
-  images.shift().replace(/^["']/, ''); 
-  images.pop().replace(/["']$/, '');
-  images.shift();
+  const images = req.files['images'];
+
   // Traitement des données (à adapter selon vos besoins)
   console.log('Nom:', nom);
   console.log('Prénom:', prenom);
@@ -61,23 +59,26 @@ app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images'
   console.log('Pays:', pays);
   console.log('Auteur sélectionné:', auteur);
 
-  if (cv) {
-      console.log('CV:', cv[0].filename);
+  if (cv && cv.length > 0) {
+    console.log('CV:', cv[0].filename);
   } else {
-      console.log('Aucun fichier CV téléchargé.');
+    console.log('Aucun fichier CV téléchargé.');
   }
-  if (images) {
+
+  if (images && images.length > 0) {
     console.log('Images :');
     images.forEach(image => {
-        console.log(image);
-     });
+      console.log(image.filename);
+    });
   } else {
-      console.log('Aucune image téléchargée.');
+    console.log('Aucune image téléchargée.');
   }
 
   // Réponse au client
   res.send('Données reçues avec succès!');
 });
+
+
 
 
 
