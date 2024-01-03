@@ -1,0 +1,18 @@
+   
+   <!-- show.handlebars -->
+
+<div class="container mx-auto mt-8 text-center">
+  <h1 class="text-2xl font-bold mb-6">{{nom}} {{prenom}}</h1>
+  <p>Auteur: {{auteur}}</p>
+  <p>Pays: {{pays}}</p>
+  <p>Genre: {{genre}}</p>
+  <p><a href="images/{{cv}}" target="_blank">Lire le pdf</a></p>
+
+  <h2 class="text-xl font-bold mt-4">Images:</h2>
+   <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+        {{#each images}}
+       <img src="images/{{this}}" alt="Image {{@index}}" class="my-2 w-[150px] h-[150px]">
+       {{/each}}
+   </div>
+
+</div>

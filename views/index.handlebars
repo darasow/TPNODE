@@ -1,15 +1,19 @@
 <div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-6">Formulaire</h1>
+  <h1 class="text-3xl font-bold mb-6 text-center">Formulaire</h1>
+
   <form action="/submit" method="post" enctype="multipart/form-data" id="myForm" class=" max-w-md mx-auto">
+     {{#if message}}
+    <h1 class="text-3xl font-bold bg-blue-500 text-center p-2 text-white">{{message}}</h1>
+  {{/if}}
     <div class="mb-4">
       <label for="nom" class="block text-sm font-medium text-gray-600">Nom:</label>
-      <input type="text" name="nom" required
+      <input type="text" name="nom"
              class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
     </div>
 
     <div class="mb-4">
       <label for="prenom" class="block text-sm font-medium text-gray-600">Prénom:</label>
-      <input type="text" name="prenom" required
+      <input type="text" name="prenom" 
              class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
     </div>
 
@@ -25,7 +29,7 @@
 
     <div class="mb-4">
       <label for="pays" class="block text-sm font-medium text-gray-600">Pays:</label>
-      <select name="pays" required
+      <select name="pays" 
               class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
         {{#each countries}}
         <option value="{{this.name}}">{{this.name}}</option>
@@ -35,7 +39,7 @@
 
     <div class="mb-4">
       <label for="auteur" class="block text-sm font-medium text-gray-600">Auteur:</label>
-      <select name="auteur" required
+      <select name="auteur" 
               class="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
         <option value="{{author}}">{{author}}</option>
       </select>
@@ -43,13 +47,13 @@
 
     <div class="mb-4">
       <label for="cv" class="block text-sm font-medium text-gray-600">CV (PDF):</label>
-      <input type="file" name="cv"  accept=".pdf" required
+      <input type="file" name="cv"  accept=".pdf" 
              class=" mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300">
     </div>
  
     <div class="mb-4">
       <label for="images" class="block text-sm font-medium text-gray-600">Images (JPG, PNG):</label>
-      <input type="file" name="images" accept=".jpg, .png" multiple   class="filepondImage" required>
+      <input type="file" name="images" accept=".jpg, .png" multiple   class="filepondImage" >
        <input type="hidden" name="allImages" id="allImages" value="">
     </div>
    

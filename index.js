@@ -3,86 +3,63 @@ const axios = require('axios');
 const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const {engine} = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const countriesList = require('countries-list');
-const fs = require('fs')
+const mkdirp = require('mkdirp');  // Ajout du module mkdirp pour créer le répertoire si nécessaire
 
 const app = express();
 const port = 3000;
-// Activer le middleware Helmet avec CSP
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'public/images/'); // Indiquez le chemin où vous souhaitez stocker les fichiers
-    },
-    filename: function (req, file, cb) {
-      const extension = path.extname(file.originalname);
-      cb(null, uuidv4() + extension); // Utilisation de l'UUID comme nom de fichier unique
-    },
-  });
-  
-  const upload = multer({ storage: storage });
+  destination: function (req, file, cb) {
+    const dest = 'public/images/';
 
-// Middleware pour parser le corps des requêtes
+    cb(null, dest);
+  },
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname);
+    cb(null, uuidv4() + extension);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "views")))
 app.use(express.static(path.join(__dirname, "public")))
-// Configuration de Handlebars comme moteur de modèle
+
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 
-// Endpoint pour le formulaire
+async function api() {
+  const response = await axios.get('https://openlibrary.org/authors/OL33421A.json');
+  const author = response.data.name;
+  return author;
+}
+
 app.get('/', async (req, res) => {
   try {
-    // Récupération de la liste des auteurs depuis l'API
-    const response = await axios.get('https://openlibrary.org/authors/OL33421A.json');
-    const author = response.data.name;
-    // Rendu du formulaire avec la liste des auteurs et des pays
-    res.render('index', { author, countries: countriesList.countries });
+    res.render('index', { author: await api(), countries: countriesList.countries, titre : "Formulaire"});
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Erreur interne du server');
   }
 });
 
-app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images', maxCount: 10 }]), (req, res) => {
-  // Récupération des données du formulaire
-  const { nom, prenom, genre, pays, auteur } = req.body;
-  const cv = req.files['cv']; // Utilisez 'cv' au lieu de 'file' pour récupérer les fichiers du champ 'cv'
-  const images = req.files['images'];
-
-  // Traitement des données (à adapter selon vos besoins)
-  console.log('Nom:', nom);
-  console.log('Prénom:', prenom);
-  console.log('Genre:', genre);
-  console.log('Pays:', pays);
-  console.log('Auteur sélectionné:', auteur);
-
-  if (cv && cv.length > 0) {
-    console.log('CV:', cv[0].filename);
-  } else {
-    console.log('Aucun fichier CV téléchargé.');
+app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images', maxCount: 10 }]), async (req, res) => {
+    const { nom, prenom, genre, pays, auteur} = req.body;
+  
+  if(!req.files['cv'] || !req.files['images'] || !nom || !prenom)
+  {
+    return res.render('index', { message: "Remplir tous les champs", author: await api(), countries: countriesList.countries  , titre : "Affichage"});
   }
-
-  if (images && images.length > 0) {
-    console.log('Images :');
-    images.forEach(image => {
-      console.log(image.filename);
-    });
-  } else {
-    console.log('Aucune image téléchargée.');
-  }
-
-  // Réponse au client
-  res.send('Données reçues avec succès!');
+    const cv = req.files['cv'][0].filename;
+    const images = req.files['images'].map(image => image.filename);
+  return res.render('show', {auteur : auteur, nom : nom, prenom : prenom, images : images, cv : cv, pays : pays, genre : genre , titre : "Affichage"});
 });
 
-
-
-
-
-// Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
 });
+
