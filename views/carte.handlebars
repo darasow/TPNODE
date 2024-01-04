@@ -1,0 +1,13 @@
+<h1>{{countryName}}</h1>
+<div id="map" class="h-[800px] w-full"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const coordinates = [{{coordinates}}]; // Récupérer les coordonnées depuis Handlebars
+        const map = L.map('map').setView(coordinates, 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker(coordinates).addTo(map)
+            .bindPopup('Emplacement du pays').openPopup();
+    });
+</script>

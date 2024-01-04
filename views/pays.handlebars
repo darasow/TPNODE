@@ -1,0 +1,13 @@
+ <div class="max-w-2xl mx-auto">
+        <h1 class="text-4xl font-bold mb-6">Liste des pays</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{#each countriesData}}
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-2"><a href="/pays/{{@index}}">{{name}}</a> - {{@index}}</h2>
+                    <img src="{{flag}}" alt="{{name}}" class="w-full h-32 object-cover mb-2">
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
