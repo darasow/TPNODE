@@ -41,12 +41,19 @@ async function api() {
 async function listePays() {
     const response = await axios.get(`https://restcountries.com/v2/all`);
     const countries = response.data;
-  return countries;
+    const countriesData = countries.map((country, index) => ({
+      index : index,
+      name: country.name,
+      flag: country.flags.png,
+      coordinates : country.latlng,
+    }));
+  return countriesData;
 }
 
 app.get('/', async (req, res) => {
   try {
-    res.render('index', { author: await api(), countries: countriesList.countries, titre : "Formulaire"});
+    // Création d'un tableau avec les données nécessaires (nom du pays et URL du drapeau)
+    res.render('index', { author: await api(), countries: await listePays(), titre : "Formulaire"});
   } catch (error) {
     console.error(error);
     res.status(500).send('Erreur interne du server');
@@ -56,16 +63,7 @@ app.get('/', async (req, res) => {
 app.get('/pays', async (req, res) => {
   try {
     // Appel à l'API Restcountries pour obtenir la liste des pays
-     const countries = await listePays()
-
-    // Création d'un tableau avec les données nécessaires (nom du pays et URL du drapeau)
-    const countriesData = countries.map((country, index) => ({
-      index : index,
-      name: country.name,
-      flag: country.flags.png,
-    }));
-
-    res.render('pays', { countriesData: countriesData });
+    res.render('pays', { countriesData: await listePays() });
     
   } catch (error) {
     console.error(error);
@@ -82,19 +80,17 @@ app.get('/pays/:id', async (req, res) => {
 
     // Trouver le pays correspondant à l'ID dans la liste
     const selectedCountry = countries.find((country, index) => index  == countryId);
-
     if (!selectedCountry) {
       // Gérer le cas où le pays n'est pas trouvé
       return res.status(404).render('404');
     }
 
     // Récupérer les coordonnées du pays
-    const coordinates = selectedCountry.latlng;
 
     // Rendre la vue "carte" avec les données du pays
     res.render('carte', {
       countryName: selectedCountry.name,
-      coordinates: coordinates,
+      coordinates: selectedCountry.coordinates,
     });
 
   } catch (error) {
@@ -108,7 +104,7 @@ app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images'
   
   if(!req.files['cv'] || !req.files['images'] || !nom || !prenom)
   {
-    return res.render('index', { message: "Remplir tous les champs", author: await api(), countries: countriesList.countries  , titre : "Affichage"});
+    return res.render('index', { message: "Remplir tous les champs", author: await api(), countries: await listePays()  , titre : "Affichage"});
   }
     const cv = req.files['cv'][0].filename;
     const images = req.files['images'].map(image => image.filename);
