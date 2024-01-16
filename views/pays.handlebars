@@ -1,9 +1,12 @@
- <div class="max-w-2xl mx-auto">
+ <div class="w-[80%] mx-auto">
         <h1 class="text-4xl font-bold mb-6">Liste des pays</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {{#each countriesData}}
-                <div class="bg-white p-4 rounded-lg shadow-md">
+                <div class="bg-white p-4 rounded-lg shadow-md relative">
+                    <a href="/pays/{{@index}}" class="absolute top-0 bottom-0 right-0 left-0"></a>
+                    <h2 class="text-xl font-semibold mb-2">population : {{population}}</h2>
+                     <h2 class="text-xl font-semibold mb-2">PositionGeog :{{latlng}}</h2>
                     <h2 class="text-xl font-semibold mb-2"><a href="/pays/{{@index}}">{{name}}</a> - {{@index}}</h2>
                     <img src="{{flag}}" alt="{{name}}" class="w-full h-32 object-cover mb-2">
                 </div>

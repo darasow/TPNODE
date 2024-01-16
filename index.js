@@ -6,11 +6,15 @@ const { v4: uuidv4 } = require('uuid');
 const { engine } = require('express-handlebars');
 const countriesList = require('countries-list');
 const mkdirp = require('mkdirp');  // Ajout du module mkdirp pour créer le répertoire si nécessaire
-const { error } = require('console');
+const {connexionMongoos} = require('./src/services/mongoose');
+const  mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
+const { User } = require('./src/models/User');
+const { Documents } = require('./src/models/Documents');
+require('dotenv').config()
 
 const app = express();
 const port = 3000;
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dest = 'public/images/';
@@ -44,6 +48,98 @@ async function listePays() {
   return countries;
 }
 
+// async function connexionMongoos() {
+//   try {
+//      const client = new MongoClient(process.env.URL);
+
+//      await client.connect()
+//      console.log("Connexion reussie");
+//      const db = client.db("nodeMongo")
+//      const collection = db.collection('documents')
+//     //  await collection.insertMany([{}])// les donnee 
+
+//     // await mongoose.connect(process.env.URL);
+
+//     // const User = mongoose.model('User', {
+//     //   name: {
+//     //     type: String,
+//     //     required: true,
+//     //   },
+//     //   age: {
+//     //     type: Number,
+//     //     required: true,
+//     //     validate: {
+//     //       validator: (v) => v >= 0,
+//     //       message: "L'age doit être positif",
+//     //     },
+//     //   },
+//     //   email: {
+//     //     type: String,
+//     //     required: true,
+//     //     validate: {
+//     //       validator: (v) => validator.isEmail(v),
+//     //       message: "L'email n'est pas valide",
+//     //     },
+//     //   },
+//     //   password: {
+//     //     type: String,
+//     //     required: true,
+//     //     validate: {
+//     //       validator: (v) => validator.isLength(v, { min: 5, max: 20 }),
+//     //       message: "Le mot de passe est invalide",
+//     //     },
+//     //   },
+//     // });
+
+//     // const mamadou = new User({
+//     //   name: 'Kadiza',
+//     //   age: 21,
+//     //   email: 'kadiza@gmail.com',
+//     //   password: 'dizalove',
+//     // });
+
+
+
+//     try {
+//       // await mamadou.save();
+//       // const data1 = await collection.findOne({name : 'ivysaur'})
+//       const data1 = await collection.find()
+//       console.table(data1);
+//       console.log('User saved successfully!');
+
+//     } catch (error) {
+//       console.error('Error saving user:', error.message);
+//     } finally {
+//       // mongoose.disconnect(); // Close the connection after saving
+//     }
+
+//     return 'Done!';
+//   } catch (error) {
+//     console.error('Error connecting to MongoDB:', error.message);
+//     throw error; // Rethrow the error to be caught in the route handler
+//   }
+// }
+
+
+/*
+apiKey = '29f83a1cf93485288601b303e6748b89'; // Remplacez par votre clé API weatherstack
+    
+    const apiUrl = `http://api.weatherstack.com/current?access_key=${this.apiKey}&query=${this.cityInput}`;
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        this.data = response.data
+        this.location = response.data.location;
+        this.current = response.data.current;
+        this.errorMessage = null;
+      })
+      .catch((error) => {
+        this.data = null;
+        this.errorMessage = 'Le pays n\'existe pas ou une erreur s\'est produite.';
+        console.error('Erreur lors de la récupération des données météo', error);
+      });
+
+*/ 
 app.get('/', async (req, res) => {
   try {
     res.render('index', { author: await api(), countries: countriesList.countries, titre : "Formulaire"});
@@ -63,10 +159,10 @@ app.get('/pays', async (req, res) => {
       index : index,
       name: country.name,
       flag: country.flags.png,
+      population: country.population,
+      latlng: country.latlng,
     }));
-
     res.render('pays', { countriesData: countriesData });
-    
   } catch (error) {
     console.error(error);
     res.status(500).send('Erreur interne du serveur');
@@ -115,6 +211,22 @@ app.post('/submit', upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'images'
   return res.render('show', {auteur : auteur, nom : nom, prenom : prenom, images : images, cv : cv, pays : pays, genre : genre , titre : "Affichage"});
 });
 
+
+app.get('/mongodb', async (req, res) => {
+  try {
+    await connexionMongoos();
+    const user = new User(req.body)
+    // console.log(document);
+    const resultat = user.save()
+    // const t = await Documents.findOne({name : 'dara'})
+      // console.log(t);
+    console.table(resultat);
+    res.render('mongodb', { data: resultat });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erreur interne du serveur');
+  }
+});
 
 app.get("*", (req, res) =>{
    res.render('404')
