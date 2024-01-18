@@ -1,22 +1,15 @@
-<<<<<<< HEAD
  <div class="w-[80%] mx-auto">
-=======
  <div class="max-w-[80%] mx-auto">
->>>>>>> 376eec2e263f31cc030d7165f7aa06d312893b5f
         <h1 class="text-4xl font-bold mb-6">Liste des pays</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {{#each countriesData}}
                 <div class="bg-white p-4 rounded-lg shadow-md relative">
-<<<<<<< HEAD
                     <a href="/pays/{{@index}}" class="absolute top-0 bottom-0 right-0 left-0"></a>
                     <h2 class="text-xl font-semibold mb-2">population : {{population}}</h2>
-                     <h2 class="text-xl font-semibold mb-2">PositionGeog :{{latlng}}</h2>
+                     <h2 class="text-xl font-semibold mb-2">Position :{{coordinates}}</h2>
                     <h2 class="text-xl font-semibold mb-2"><a href="/pays/{{@index}}">{{name}}</a> - {{@index}}</h2>
-=======
-                    <h2 class="text-xl font-semibold mb-2">{{name}}</h2>
                         <a href="/pays/{{@index}}" class="absolute top-0 bottom-0 left-0 right-0"></a>
->>>>>>> 376eec2e263f31cc030d7165f7aa06d312893b5f
                     <img src="{{flag}}" alt="{{name}}" class="w-full h-32 object-cover mb-2">
                 </div>
             {{/each}}

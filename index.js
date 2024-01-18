@@ -50,6 +50,7 @@ async function listePays() {
       name: country.name,
       flag: country.flags.png,
       coordinates : country.latlng,
+      population : country.population,
     }));
   return countriesData;
 }
@@ -159,22 +160,9 @@ app.get('/', async (req, res) => {
 app.get('/pays', async (req, res) => {
   try {
     // Appel à l'API Restcountries pour obtenir la liste des pays
-<<<<<<< HEAD
-     const countries = await listePays()
 
-    // Création d'un tableau avec les données nécessaires (nom du pays et URL du drapeau)
-    const countriesData = countries.map((country, index) => ({
-      index : index,
-      name: country.name,
-      flag: country.flags.png,
-      population: country.population,
-      latlng: country.latlng,
-    }));
-    res.render('pays', { countriesData: countriesData });
-=======
     res.render('pays', { countriesData: await listePays() });
     
->>>>>>> 376eec2e263f31cc030d7165f7aa06d312893b5f
   } catch (error) {
     console.error(error);
     res.status(500).send('Erreur interne du serveur');
